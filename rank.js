@@ -1,6 +1,6 @@
 var time_periods = [];
 var count = 0;
-var update_rate = 10;
+var update_rate = 9;
 var time_period = 0;
 var border = 20;
 var max_time_period;
@@ -16,7 +16,6 @@ var img_hero_mattock;
 function setup() {
 	split_raw_data();
 	max_time_period = time_periods.length;
-	console.log(max_time_period);
 	getPlayerRanks();
 	frameRate(30);
 	createCanvas(screen.width, screen.height);
@@ -94,9 +93,6 @@ function drawGraphFast(player, player_x , player_y, color) {
 		x_end = 20+100+line_width*(i+1);
 		let y_start = 20+tile_height*(start_rank-0.5) + 400/3 + 10;
 		y_end = 20+tile_height*(end_rank-0.5) + 400/3 + 10;
-		if (y_start > screen.height || y_end > screen.height) {
-			console.log (y_start, y_end);
-		}
 		line(x_start, y_start, x_end, y_end);
 	}
 	if (!x_end) {
@@ -132,7 +128,6 @@ function drawGraph(player, player_x , player_y, color) {
 			let y_start = 20+tile_height*(start_rank-0.5)+line_height*j;
 			y_end = 20+tile_height*(start_rank-0.5)+line_height*(j+1);
 			line(x_start, y_start, x_end, y_end);
-			console.log(x_start, y_start, x_end, y_end);
 		}
 	}
 	if (time_period < 432) {
