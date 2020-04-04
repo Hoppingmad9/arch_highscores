@@ -6,6 +6,7 @@ var border = 20;
 var max_time_period;
 var current_player_data;
 var player_ranks = new Object();
+var player_colors = new Object();
 
 var img_arch_cape;
 var img_arch_logo;
@@ -15,11 +16,13 @@ var img_hero_mattock;
 function setup() {
 	split_raw_data();
 	max_time_period = time_periods.length;
+	console.log(max_time_period);
 	getPlayerRanks();
 	frameRate(30);
 	createCanvas(screen.width, screen.height);
 	background('#2d2d2d');
 	current_player_data = getPlayerData();
+	setColors();
 }
 
 function draw() {
@@ -31,12 +34,42 @@ function draw() {
 		if (time_period == max_time_period) {
 			time_period = max_time_period;
 		}
+		updateColors();
 		current_player_data = getPlayerData();
 	}
 	drawDetails();
 	draw_players();
+	if (time_period == 1) {
+		//noLoop();
+	}
 	if (time_period == max_time_period) {
 		noLoop();
+	}
+}
+
+function updateColors() {
+	let j = 5;
+	for (let i = 0; i < 5; i++) {
+		if (current_player_data[i]["end_pos"] > 4) {
+			for (j; j < current_player_data.length; j++) {
+				if (current_player_data[j]['end_pos'] < 5) {
+					player_colors[current_player_data[j]['player']] = player_colors[current_player_data[i]['player']];
+					delete player_colors[current_player_data[i]['player']];
+					j++;
+					//current_player_data[j]['color'] = current_player_data[i]['color'];
+					//current_player_data[i]['color'] = '';
+					break;
+				}
+			}
+		}
+	}
+}
+
+function setColors() {
+	let colors = ['red','blue','green','yellow','purple'];
+	for (let i = 0; i < 5; i++) {
+		player_colors[current_player_data[i]['player']] = colors[i];
+		//current_player_data[i]['color'] = colors[i];
 	}
 }
 
@@ -49,7 +82,7 @@ function drawGraphFast(player, player_x , player_y, color) {
 	let y_end = false;
 	let end_rank;
 	for (let i = 0; i < time_period; i++) {
-		i = Math.min(i, 431);
+		i = Math.min(i, (max_time_period - 1));
 		let start_rank = player_ranks[player]['data'][i];
 		end_rank = player_ranks[player]['data'][i+1];
 		if (start_rank > 25 || end_rank > 25) {
@@ -61,13 +94,16 @@ function drawGraphFast(player, player_x , player_y, color) {
 		x_end = 20+100+line_width*(i+1);
 		let y_start = 20+tile_height*(start_rank-0.5) + 400/3 + 10;
 		y_end = 20+tile_height*(end_rank-0.5) + 400/3 + 10;
+		if (y_start > screen.height || y_end > screen.height) {
+			console.log (y_start, y_end);
+		}
 		line(x_start, y_start, x_end, y_end);
 	}
 	if (!x_end) {
-		x_end = 20+100+line_width*(Math.min(431,time_period));
+		x_end = 20+100+line_width*(Math.min((max_time_period - 1),time_period));
 	}
 	if (!y_end) {
-		end_rank = player_ranks[player]['data'][Math.min(431,time_period)];
+		end_rank = player_ranks[player]['data'][Math.min((max_time_period - 1),time_period)];
 		y_end = 20+tile_height*(end_rank-0.5) + 400/3 + 10;
 	}
 	if (end_rank < 26) {
@@ -82,8 +118,8 @@ function drawGraph(player, player_x , player_y, color) {
 	let tile_height = (screen.height - 40) / 25;
 	let x_end = 20+100;
 	let y_end;// = 20+tile_height*(start_rank-0.5)
-	for (let i = 1; i <= Math.min(time_period,431); i++) {
-		i = Math.min(i, 431);
+	for (let i = 1; i <= Math.min(time_period,(max_time_period - 1)); i++) {
+		i = Math.min(i, (max_time_period - 1));
 		let start_rank = player_ranks[player]['data'][i-1];
 		let end_rank = player_ranks[player]['data'][i];
 		if (start_rank > 25 || end_rank > 25) {
@@ -225,23 +261,7 @@ function getPlayerRanks() {
 				let temp_array = [];
 				temp_array.length = max_time_period;
 				temp_array.fill(35);
-				let colors = ['red','blue','green','yellow','purple'];
-				let tempNum = Object.keys(player_ranks).length%colors.length;
-				let tempColor;
-				if (time_periods[i][j]['player'] == "le me") {
-					tempColor = 'blue';
-				} else if (time_periods[i][j]['player'] == "Maikeru") {
-					tempColor = 'red';
-				} else if (time_periods[i][j]['player'] == "L33") {
-					tempColor = 'green';
-				} else if (time_periods[i][j]['player'] == "Roskat") {
-					tempColor = 'yellow';
-				} else if (time_periods[i][j]['player'] == "Legacy of KG") {
-					tempColor = 'purple';
-				} else {
-					tempColor = colors[tempNum];
-				}
-				player_ranks[time_periods[i][j]['player']] = {color: tempColor, data:temp_array};
+				player_ranks[time_periods[i][j]['player']] = {color: '', data:temp_array};
 				player_ranks[time_periods[i][j]['player']]["data"][i] = j+1;
 			}
 		}
@@ -253,7 +273,7 @@ function getPlayerData() {
 	let new_player_data = time_periods[Math.min(time_period+1,max_time_period-1)];
 	let player_data = [];
 	for (let i = 0; i < 25; i++) {
-		player_data.push({player: current_player_data[i]["player"], start_pos: i, end_pos: 25, color: current_player_data[i]["color"], level: current_player_data[i]["level"]});
+		player_data.push({player: current_player_data[i]["player"], start_pos: i, end_pos: 25, level: current_player_data[i]["level"]});
 	}
 	for (let i = 0; i < 25; i++) {
 		let found = false;
@@ -265,7 +285,7 @@ function getPlayerData() {
 			}
 		}
 		if (!found) {
-			player_data.push({player: new_player_data[i]["player"], start_pos: 25, end_pos: i, color: new_player_data[i]["color"], level: new_player_data[i]["level"]});
+			player_data.push({player: new_player_data[i]["player"], start_pos: 25, end_pos: i, level: new_player_data[i]["level"]});
 		}
 	}
 	return player_data;
@@ -313,7 +333,7 @@ function draw_players() {
 		//let colors = ['red','blue','green','yellow','pink','orange','purple','brown','lime'];
 		//if (current_player_data[i]['end_pos'] !== 26 && current_player_data[i]['start_pos'] !== 26) {
 		if (i < 5) {
-			drawGraphFast(current_player_data[i]['player'], left_margin, top_margin, player_ranks[current_player_data[i]['player']]['color']);
+			drawGraphFast(current_player_data[i]['player'], left_margin, top_margin, player_colors[current_player_data[i]['player']]);
 		}
 
 		fill('#1d1d1d');
