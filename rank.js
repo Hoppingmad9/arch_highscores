@@ -3,17 +3,20 @@ var count = 0;
 var update_rate = 3;
 var time_period = 0;
 var border = 20;
-var max_time_period = 431;
+var max_time_period;
 var current_player_data;
+var player_ranks = [];
 
 function setup() {
 	split_raw_data();
+	max_time_period = time_periods.length;
+	getPlayerRanks();
+	console.log(player_ranks);
 	frameRate(30);
 	createCanvas(screen.width, screen.height);
 	console.log(time_periods);
 	background('#2d2d2d');
-	current_player_data = getPlayers();
-	console.log(current_player_data);
+	current_player_data = getPlayerData();
 }
 
 function draw() {
@@ -25,7 +28,7 @@ function draw() {
 		if (time_period > max_time_period) {
 			time_period = max_time_period;
 		}
-		current_player_data = getPlayers();
+		current_player_data = getPlayerData();
 		console.log(time_period);
 	}
 	drawDetails();
@@ -35,6 +38,7 @@ function draw() {
 	if (count == update_rate*2) {
 		//noLoop();
 	}
+	noLoop();
 }
 
 function drawDetails() {
@@ -56,7 +60,7 @@ function drawDetails() {
 		let tile_color = '#5d5d5d';
 		let text_color = 'white';
 		let player_emoji = ' ';
-		if (i == 0) {
+		/*if (i == 0) {
 			tile_color = '#FFD700';
 			text_color = 'black';
 		} else if (i == 1) {
@@ -65,7 +69,7 @@ function drawDetails() {
 		} else if (i == 2) {
 			tile_color = '#cd7f32';
 			text_color = 'black';
-		}
+		}*/
 		fill(tile_color);
 		rect(left_margin, top_margin, box_width, box_height, corner_rounding, corner_rounding, corner_rounding, corner_rounding);
 		strokeWeight(0);
@@ -73,12 +77,31 @@ function drawDetails() {
 		textAlign(CENTER);
 		textSize(20);
 		text(i+1, left_margin+3.5, top_margin+10, box_width, box_height);
-
-		
 	}
 }
 
-function getPlayers() {
+function getPlayerRanks() {
+	for (let i = 0; i < max_time_period; i++) {
+		for (let j = 0; j < 25; j++) {
+			let found = false;
+			for (let k = 0; k < player_ranks.length; k++) {
+				if (time_periods[i][j]['player'] == player_ranks[k]['player']) {
+					player_ranks[k]['ranks'][i] = j+1;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				let temp_array = [];
+				temp_array.length = max_time_period;
+				temp_array.fill(26);
+				player_ranks.push({player:time_periods[i][j]['player'],ranks:temp_array});
+			}
+		}
+	}
+}
+
+function getPlayerData() {
 	let current_player_data = time_periods[time_period];
 	let new_player_data;
 	if (time_period == max_time_period) {
@@ -130,7 +153,7 @@ function draw_players_moving_up_and_down() {
 		} else if (current_player_data[i]['player'] == "L33") {
 			tile_color = '#C0C0C0';
 			text_color = 'black';
-		} else if (current_player_data[i]['player'] == "Legacy of KG") {
+		} else if (current_player_data[i]['player'] == "Roskat") {
 			tile_color = '#cd7f32';
 			text_color = 'black';
 		} else if (current_player_data[i]['player'] == "Exogor") {
