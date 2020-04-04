@@ -32,9 +32,7 @@ function draw() {
 		console.log(time_period);
 	}
 	drawDetails();
-	//draw_players();
-	//draw_players_moving();
-	draw_players_moving_up_and_down();
+	draw_players();
 	if (count == update_rate*2) {
 		//noLoop();
 	}
@@ -129,7 +127,7 @@ function getPlayerData() {
 	return player_data;
 }
 
-function draw_players_moving_up_and_down() {
+function draw_players() {
 	let tile_height = (screen.height - 40) / 25;
 	let box_height = tile_height - 6;
 	let box_width = 200;
@@ -166,80 +164,6 @@ function draw_players_moving_up_and_down() {
 		textAlign(LEFT);
 		textSize(20);
 		text(current_player_data[i]['player']+player_emoji, left_margin+20, top_margin+10, box_width, box_height);
-	}
-}
-
-function draw_players_moving() {
-	let player_data = time_periods[time_period];
-	let tile_height = (screen.height - 40) / 25;
-	let box_height = tile_height - 6;
-	let box_width = 200;
-	let corner_rounding = 15;
-	let left_margin = 20+2*(box_width+100);
-	for (let i = 24; i >= 0; i--) {
-
-		let new_time_period = time_period + 1
-		if (new_time_period > max_time_period) {
-			new_time_period = max_time_period;
-		}
-		let new_player_data = time_periods[new_time_period];
-		let new_position = 25;
-		for (let j = 0; j < 25; j++)  {
-			if (player_data[i]['player'] == new_player_data[j]['player']) {
-				new_position = j;
-				break;
-			}
-		}
-		let old_top_margin = 20+2+i*tile_height;
-		let new_top_margin = 20+2+new_position*tile_height
-		let cycle = count%update_rate;
-		let top_margin = (old_top_margin*(update_rate-cycle)+new_top_margin*cycle)/update_rate;
-
-		strokeWeight(3);
-		stroke('black');
-		let tile_color = '#5d5d5d';
-		let text_color = 'white';
-		let player_emoji = ' ';
-		if (player_data[i]['player'] == "le me") {
-			tile_color = '#FFD700';
-			text_color = 'white';
-		} else if (player_data[i]['player'] == "L33") {
-			tile_color = '#C0C0C0';
-			text_color = 'black';
-		} else if (player_data[i]['player'] == "Legacy of KG") {
-			tile_color = '#cd7f32';
-			text_color = 'white';
-		} else if (player_data[i]['player'] == "Exogor") {
-			player_emoji += '😴';
-		}
-		fill(tile_color);
-		rect(left_margin, top_margin, box_width, box_height, corner_rounding, corner_rounding, corner_rounding, corner_rounding);
-		strokeWeight(0);
-		fill(text_color);
-		textAlign(LEFT);
-		textSize(20);
-		text(player_data[i]['player']+player_emoji, left_margin+20, top_margin+10, box_width, box_height);
-	}
-}
-
-function draw_players() {
-	let player_data = time_periods[time_period];
-	let tile_height = (screen.height - 40) / 25;
-	let box_height = tile_height - 6;
-	let box_width = 200;
-	let corner_rounding = 15;
-	let left_margin = 20+(box_width+100);
-	for (let i = 24; i >= 0; i--) {
-		let top_margin = 20+2+i*tile_height;
-		strokeWeight(3);
-		stroke('black');
-		fill('#5d5d5d');
-		rect(left_margin, top_margin, box_width, box_height, corner_rounding, corner_rounding, corner_rounding, corner_rounding);
-		strokeWeight(0);
-		fill('white');
-		textAlign(LEFT);
-		textSize(20);
-		text(player_data[i]['player'], left_margin+20, top_margin+10, box_width, box_height);
 	}
 }
 
