@@ -54,6 +54,8 @@ function drawGraphFast(player, player_x , player_y, color) {
 		let start_rank = player_ranks[player]['data'][i];
 		end_rank = player_ranks[player]['data'][i+1];
 		if (start_rank > 25 || end_rank > 25) {
+			x_end = false;
+			y_end = false;
 			continue;
 		}
 		let x_start = 20+100+line_width*i;
@@ -112,13 +114,15 @@ function drawDetails() {
 	let box_width = box_height;
 	let corner_rounding = 15;
 	let left_margin = 40;
-	for (let i = 0; i < 24; i++) {
+	for (let i = 0; i < 25; i++) {
 		let top_margin = 20+2+i*tile_height+400/3 + 10;
 
 		strokeWeight(1);
 		stroke('#1d1d1d');
 		line_top_margin = top_margin+box_height+3;
-		line(left_margin, line_top_margin, left_margin+100+1300+20, line_top_margin)
+		if (i != 24) {
+			line(left_margin, line_top_margin, left_margin+100+1300+20, line_top_margin)
+		}
 
 		strokeWeight(3);
 		stroke('black');
@@ -258,7 +262,7 @@ function draw_players() {
 		text(current_player_data[i]['player']+player_emoji, left_margin+20, top_margin+7, box_width, box_height);
 		//let colors = ['red','blue','green','yellow','pink','orange','purple','brown','lime'];
 		//if (current_player_data[i]['end_pos'] !== 26 && current_player_data[i]['start_pos'] !== 26) {
-		if (i < 5) {
+		if (i < 10) {
 			drawGraphFast(current_player_data[i]['player'], left_margin, top_margin, player_ranks[current_player_data[i]['player']]['color']);
 		}
 
