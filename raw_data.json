@@ -1,4 +1,4 @@
-[
+raw_data = [
 {"type":"header","version":"4.9.0.1","comment":"Export to JSON plugin for PHPMyAdmin"},
 {"type":"database","name":"archeology_tracker"},
 {"type":"table","name":"arch_high_scores","database":"archeology_tracker","data":
@@ -10805,4 +10805,4 @@
 {"id":"10800","time":"431","player":"Kuzi","level":"92","xp":"6840602"}
 ]
 }
-]
+];
