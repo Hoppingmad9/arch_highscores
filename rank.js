@@ -1,20 +1,19 @@
 var time_periods = [];
 var count = 0;
 var update_rate = 3;
-var time_period = 0;
+var time_period = 430;
 var border = 20;
 var max_time_period;
 var current_player_data;
-var player_ranks = [];
+var player_ranks = new Object();
 
 function setup() {
 	split_raw_data();
 	max_time_period = time_periods.length;
-	getPlayerRanks();
-	console.log(player_ranks);
+	//getPlayerRanks();
+	//drawGraph("le me");
 	frameRate(30);
 	createCanvas(screen.width, screen.height);
-	console.log(time_periods);
 	background('#2d2d2d');
 	current_player_data = getPlayerData();
 }
@@ -25,8 +24,9 @@ function draw() {
 	count++;
 	if (count%update_rate == 0) {
 		time_period ++;
-		if (time_period > max_time_period) {
+		if (time_period == max_time_period) {
 			time_period = max_time_period;
+			noLoop();
 		}
 		current_player_data = getPlayerData();
 		console.log(time_period);
@@ -38,7 +38,16 @@ function draw() {
 	if (count == update_rate*2) {
 		//noLoop();
 	}
-	noLoop();
+	//noLoop();
+}
+
+function drawGraph(player) {
+	for (let i = 0; i < Math.min(time_period,431); i++) {
+		i = Math.min(i+1, 431)
+		let start_rank = player_ranks[player][i];
+		let end_rank = player_ranks[player][i+1];
+		console.log(start_rank + " : " + end_rank);
+	}
 }
 
 function drawDetails() {
@@ -83,32 +92,22 @@ function drawDetails() {
 function getPlayerRanks() {
 	for (let i = 0; i < max_time_period; i++) {
 		for (let j = 0; j < 25; j++) {
-			let found = false;
-			for (let k = 0; k < player_ranks.length; k++) {
-				if (time_periods[i][j]['player'] == player_ranks[k]['player']) {
-					player_ranks[k]['ranks'][i] = j+1;
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
+			if (time_periods[i][j]['player'] in player_ranks) {
+				player_ranks[time_periods[i][j]['player']][i] = j+1;
+			}else {
 				let temp_array = [];
 				temp_array.length = max_time_period;
 				temp_array.fill(26);
-				player_ranks.push({player:time_periods[i][j]['player'],ranks:temp_array});
+				player_ranks[time_periods[i][j]['player']] = temp_array;
 			}
 		}
 	}
 }
 
 function getPlayerData() {
-	let current_player_data = time_periods[time_period];
+	let current_player_data = time_periods[Math.min(time_period,max_time_period-1)];
 	let new_player_data;
-	if (time_period == max_time_period) {
-		new_player_data = time_periods[time_period];
-	} else {
-		new_player_data = time_periods[time_period+1];
-	}
+	new_player_data = time_periods[Math.min(time_period+1,max_time_period-1)];
 	let player_data = [];
 	for (let i = 0; i < 25; i++) {
 		player_data.push({player: current_player_data[i]["player"], start_pos: i, end_pos: 25});
@@ -116,6 +115,7 @@ function getPlayerData() {
 	for (let i = 0; i < 25; i++) {
 		let found = false;
 		for (let j = 0; j < 25; j++) {
+			console.log(new_player_data);
 			if (new_player_data[i]["player"] == player_data[j]["player"]) {
 				player_data[j]["end_pos"] = i;
 				found = true;
