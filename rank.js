@@ -143,6 +143,44 @@ function drawDetails() {
 		textSize(18);
 		text(i+1, left_margin+3.5, top_margin+7, box_width, box_height);
 	}
+	let text_array_1 = [
+		['The ', 'white'],
+		['Gold', '#FFD700'],
+		[', ', 'white'],
+		['Silver', '#C0C0C0'],
+		[', and ', 'white'],
+	];
+	let text_array_2 = [
+		['Bronze ', '#CD7F32'],
+		['indicate the', 'white'],
+	];
+	let text_array_3 = [
+		['first 3 players to get', 'white'],
+	];
+	let text_array_4 = [
+		['99 Archeology.', 'white'],
+	];
+	textAlign(LEFT);
+	textSize(20);
+	let text_box_x = (screen.width - 1600 - 40) / 2 + 1620 - 193/2;
+	let text_box_y = 240;
+	drawtext(text_box_x,text_box_y,text_array_1)
+	drawtext(text_box_x,text_box_y+22,text_array_2)
+	drawtext(text_box_x,text_box_y+44,text_array_3)
+	drawtext(text_box_x,text_box_y+66,text_array_4)
+
+	text_array_1 = [
+		['Made by ', 'white'],
+	];
+	text_array_2 = [
+		['Hoppingmad9', '#00FFFF'],
+	];
+	textAlign(CENTER);
+	textSize(24);
+	text_box_x = (screen.width - 1600 - 40) / 2 + 1620;
+	text_box_y = 940;
+	drawtext(text_box_x,text_box_y,text_array_1)
+	drawtext(text_box_x,text_box_y+26,text_array_2)
 
 	fill('#1d1d1d');
 	noStroke();
@@ -152,9 +190,23 @@ function drawDetails() {
 	rect(screen.width-20,0,20,screen.height);
 
 	image(img_arch_logo, screen.width/2-1279/2/3, -20, 1279/2.1, 400/2.1);
-	image(img_arch_cape, 20+100+1200+100+200 + 10, (screen.height - 40 - 400/3 - 10)/2+20+400/3 + 10 - 901/2/1.8, 457/1.8, 901/1.8);
+	image(img_arch_cape, (screen.width - 1600 - 40) / 2 + 1620 - 457/2/1.8, (screen.height - 40 - 400/3 - 10)/2+20+400/3 + 10 - 901/2/1.8, 457/1.8, 901/1.8);
 	image(img_arch, 30, 30);
 	image(img_hero_mattock, screen.width - 30 - 53*2, 30, 53*2, 49*2);
+}
+
+function drawtext( x, y, text_array ) {
+
+    var pos_x = x;
+    for ( var i = 0; i < text_array.length; ++ i ) {
+        var part = text_array[i];
+        var t = part[0];
+        var c = part[1];
+        var w = textWidth( t );
+        fill( c );
+        text( t, pos_x, y);
+        pos_x += w;
+    }
 }
 
 function preload() {
@@ -244,7 +296,7 @@ function draw_players() {
 			tile_color = '#C0C0C0';
 			text_color = 'black';
 		} else if (current_player_data[i]['player'] == "Roskat") {
-			tile_color = '#cd7f32';
+			tile_color = '#CD7F32';
 			text_color = 'black';
 		} else if (current_player_data[i]['player'] == "Exogor") {
 			player_emoji += '😴';
