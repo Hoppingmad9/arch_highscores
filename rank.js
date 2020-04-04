@@ -1,6 +1,6 @@
 var time_periods = [];
 var count = 0;
-var update_rate = 3;
+var update_rate = 10;
 var time_period = 0;
 var border = 20;
 var max_time_period;
@@ -20,7 +20,6 @@ function setup() {
 	createCanvas(screen.width, screen.height);
 	background('#2d2d2d');
 	current_player_data = getPlayerData();
-	//console.log(player_ranks);
 }
 
 function draw() {
@@ -72,9 +71,6 @@ function drawGraphFast(player, player_x , player_y, color) {
 		y_end = 20+tile_height*(end_rank-0.5) + 400/3 + 10;
 	}
 	if (end_rank < 26) {
-		if (time_period > 430) {
-			console.log(x_end, y_end, player_x-10, player_y+tile_height*0.5);
-		}
 		line(x_end, y_end, player_x-10, player_y+tile_height*0.5-2)
 	}
 }
@@ -205,7 +201,7 @@ function getPlayerData() {
 	let new_player_data = time_periods[Math.min(time_period+1,max_time_period-1)];
 	let player_data = [];
 	for (let i = 0; i < 25; i++) {
-		player_data.push({player: current_player_data[i]["player"], start_pos: i, end_pos: 25, color: current_player_data[i]["color"]});
+		player_data.push({player: current_player_data[i]["player"], start_pos: i, end_pos: 25, color: current_player_data[i]["color"], level: current_player_data[i]["level"]});
 	}
 	for (let i = 0; i < 25; i++) {
 		let found = false;
@@ -217,7 +213,7 @@ function getPlayerData() {
 			}
 		}
 		if (!found) {
-			player_data.push({player: new_player_data[i]["player"], start_pos: 25, end_pos: i, color: current_player_data[i]["color"]});
+			player_data.push({player: new_player_data[i]["player"], start_pos: 25, end_pos: i, color: new_player_data[i]["color"], level: new_player_data[i]["level"]});
 		}
 	}
 	return player_data;
@@ -259,10 +255,12 @@ function draw_players() {
 		fill(text_color);
 		textAlign(LEFT);
 		textSize(20);
-		text(current_player_data[i]['player']+player_emoji, left_margin+20, top_margin+7, box_width, box_height);
+		text(current_player_data[i]['player']+player_emoji, left_margin+10, top_margin+7, box_width, box_height);
+		textAlign(RIGHT);
+		text(current_player_data[i]['level'], left_margin, top_margin+7, box_width, box_height);
 		//let colors = ['red','blue','green','yellow','pink','orange','purple','brown','lime'];
 		//if (current_player_data[i]['end_pos'] !== 26 && current_player_data[i]['start_pos'] !== 26) {
-		if (i < 10) {
+		if (i < 5) {
 			drawGraphFast(current_player_data[i]['player'], left_margin, top_margin, player_ranks[current_player_data[i]['player']]['color']);
 		}
 
